@@ -158,7 +158,14 @@ class CloudChat
     func joinChatRoom(name: String, completion: ((chatRoom: ChatRoom!, error: NSError!) -> (Void)) ) {
         findChatRoom(name) { (chatRoom: ChatRoom!, error: NSError!) in
             if chatRoom != nil {
-                // Join
+                let chatRoomRecord = chatRoom.getRecord(self.currentUser!)
+                
+                self.publicDatabase.saveRecord(chatRoomRecord) { (record: CKRecord!, error: NSError!) in
+                    println(record)
+                    println(error)
+                    
+                    completion(chatRoom: chatRoom, error: error)
+                }
             } else if (error.code == CloudChatError.ChatRoomWithProvidedNameMissing.toRaw()) {
                 // create and join
             } else {
